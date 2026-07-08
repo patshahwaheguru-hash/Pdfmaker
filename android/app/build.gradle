@@ -3,9 +3,12 @@ plugins {
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
+
 android {
     namespace "com.example.excel_image_pdf"
     compileSdkVersion 34
+    ndkVersion "25.1.8869837"
+
     defaultConfig {
         applicationId "com.example.excel_image_pdf"
         minSdkVersion 21
@@ -13,8 +16,14 @@ android {
         versionCode 1
         versionName "1.0.0"
     }
+
     buildTypes {
-        release { signingConfig signingConfigs.debug }
+        release {
+            signingConfig signingConfigs.debug
+        }
     }
 }
-flutter { source '../..' }
+
+flutter {
+    source '../..'
+}
