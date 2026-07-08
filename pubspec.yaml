@@ -1,7 +1,5 @@
 name: excel_image_pdf
 description: Excel and Image to PDF Converter
-
-publish_to: 'none'
 version: 1.0.0+1
 
 environment:
