@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     var excel = Excel.decodeBytes(bytes);
     final pdf = pw.Document();
 
-    excel.tables.forEach((name, sheet) {
+    TableHelper.fromTextArray(
       final data = sheet.rows.map((row) => row.map((e) => e?.value.toString() ?? '').toList()).toList();
       pdf.addPage(pw.Page(
         pageFormat: PdfPageFormat.a4.landscape,
