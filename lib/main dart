@@ -1,0 +1,97 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:excel/excel.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:path_provider/path_provider.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'PDF Converter',
+      theme: ThemeData(colorSchemeSeed: Colors.green, useMaterial3: true),
+      home: const HomePage(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool loading = false;
+
+  Future<void> excelToPdf() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['xlsx','xls']);
+    if (result == null) return;
+    setState(() => loading = true);
+
+    final bytes = File(result.files.single.path!).readAsBytesSync();
+    var excel = Excel.decodeBytes(bytes);
+    final pdf = pw.Document();
+
+    excel.tables.forEach((name, sheet) {
+      final data = sheet.rows.map((row) => row.map((e) => e?.value.toString() ?? '').toList()).toList();
+      pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4.landscape,
+        build: (c) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text(name, style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 10),
+            pw.Table.fromTextArray(data: data, border: pw.TableBorder.all()),
+          ],
+        ),
+      ));
+    });
+    await savePdf(pdf, 'Excel_to_PDF.pdf');
+    setState(() => loading = false);
+  }
+
+  Future<void> imagesToPdf() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.image, allowMultiple: true);
+    if (result == null) return;
+    setState(() => loading = true);
+
+    final pdf = pw.Document();
+    for (var file in result.files) {
+      final img = pw.MemoryImage(File(file.path!).readAsBytesSync());
+      pdf.addPage(pw.Page(build: (c) => pw.Center(child: pw.Image(img))));
+    }
+    await savePdf(pdf, 'Images_to_PDF.pdf');
+    setState(() => loading = false);
+  }
+
+  Future<void> savePdf(pw.Document pdf, String name) async {
+    final dir = await getApplicationDocumentsDirectory();
+    await File('${dir.path}/$name').writeAsBytes(await pdf.save());
+    await Printing.sharePdf(bytes: await pdf.save(), filename: name);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Excel & Image to PDF')),
+      body: Center(
+        child: loading ? const CircularProgressIndicator() : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton.icon(onPressed: excelToPdf, icon: const Icon(Icons.grid_on), label: const Text('Excel to PDF'), style: ElevatedButton.styleFrom(minimumSize: const Size(260, 55))),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(onPressed: imagesToPdf, icon: const Icon(Icons.image), label: const Text('Images to PDF'), style: ElevatedButton.styleFrom(minimumSize: const Size(260, 55))),
+          ],
+        ),
+      ),
+    );
+  }
+}
