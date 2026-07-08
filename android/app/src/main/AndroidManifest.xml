@@ -1,8 +1,8 @@
-<manifest package="com.example.excel_image_pdf">
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<manifest package="com.example.excel_image_pdf"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application
-        android:label="Excel Image PDF"
+        android:label="excel_image_pdf"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
