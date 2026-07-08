@@ -4,10 +4,12 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def flutterVersionCode = "1"
+def flutterVersionName = "1.0.0"
+
 android {
     namespace "com.example.excel_image_pdf"
     compileSdk 34
-    ndkVersion "25.1.8869837"
 
     defaultConfig {
         applicationId "com.example.excel_image_pdf"
@@ -20,6 +22,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.debug
+            minifyEnabled false
         }
     }
 }
@@ -27,3 +30,5 @@ android {
 flutter {
     source '../..'
 }
+
+dependencies {}
