@@ -6,20 +6,15 @@ plugins {
 
 android {
     namespace "com.example.excel_image_pdf"
-    compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+    compileSdk 34
+    ndkVersion "25.1.8869837"
 
     defaultConfig {
         applicationId "com.example.excel_image_pdf"
-        minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutter.versionCode
-        versionName flutter.versionName
+        minSdk 21
+        targetSdk 34
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
     }
 
     buildTypes {
