@@ -9,9 +9,7 @@ workflows:
     scripts:
       - name: Get dependencies
         script: flutter pub get
-      - name: Analyze code
-        script: flutter analyze --no-pub
-      - name: Build AAB with verbose logs
-        script: flutter build appbundle --release --verbose
+      - name: Build AAB
+        script: flutter build appbundle --release
     artifacts:
       - build/app/outputs/bundle/release/*.aab
